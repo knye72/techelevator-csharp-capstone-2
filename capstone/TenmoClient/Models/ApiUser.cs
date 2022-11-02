@@ -9,5 +9,12 @@
         public string Username { get; set; }
         public string Token { get; set; }
         public string Message { get; set; }
+
+        public decimal Balance { get; set; } = 0;
+
+        public ApiUser ()
+        {
+
+        }
     }
 }
