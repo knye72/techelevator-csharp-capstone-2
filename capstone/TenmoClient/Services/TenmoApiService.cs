@@ -23,10 +23,24 @@ namespace TenmoClient.Services
 
             CheckForError(response);
             return response.Data;
-        }   
-        //public SendTransfer SendMoney()
-        //{
+        }
 
-        //}
+        public SendTransfer Transfer(string fromUser, string toUser, decimal amount)
+        {
+            RestRequest request = new RestRequest($"user");
+            IRestResponse<SendTransfer> response = client.Post<SendTransfer>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
+        public List<ApiUser> ListUsers()
+        {
+            RestRequest request = new RestRequest($"user");
+            IRestResponse<List<ApiUser>> response = client.Get<List<ApiUser>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace TenmoServer.Models
     public class Transfer
     {
         public int TransferId { get; set; }
-        public decimal StartingBalance { get; set; }
+       
         public decimal TransferAmount { get; set; }
 
         public int TransferStatusId { get; set; } = 2; // 1 = pending, 2 = approved, 3 = rejected

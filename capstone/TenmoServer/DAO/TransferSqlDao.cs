@@ -72,8 +72,46 @@ namespace TenmoServer.DAO
 
             return accountId;
         }
+        public User GetUserFromReader(SqlDataReader reader)
+        {
+            User u = new User()
+            {
+                UserId = Convert.ToInt32(reader["user_id"]),
+                Username = Convert.ToString(reader["username"]),
+               
+            };
 
-            public Transfer CreateTransfer(Transfer transfer, string fromUsername, string toUsername)
+            return u;
+        }
+
+        public List<User> GetUsers()
+        {
+            List<User> returnUsers = new List<User>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT user_id, username FROM tenmo_user", conn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        User u = GetUserFromReader(reader);
+                        returnUsers.Add(u);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return returnUsers;
+        }
+        public Transfer CreateTransfer(Transfer transfer, string fromUsername, string toUsername)
         {
             int newTransferId;
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -128,21 +166,23 @@ namespace TenmoServer.DAO
             transfer.TransferAmount = Convert.ToDecimal(reader["amount"]);
             transfer.FromAccountId = Convert.ToInt32(reader["account_from"]);
             transfer.ToAccountId = Convert.ToInt32(reader["account_to"]);
-            
+
             return transfer;
         }
-            public void UpdateAccount(Account account)
+        public User UpdateAccount(User userAccount)
         {
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance, WHERE user_id = @user_id", conn);
-                cmd.Parameters.AddWithValue("@balance", account.Balance);
-                cmd.Parameters.AddWithValue("@user_id", account.UserId);
+                cmd.Parameters.AddWithValue("@balance", userAccount.Balance);
+                cmd.Parameters.AddWithValue("@user_id", userAccount.UserId);
 
 
                 cmd.ExecuteNonQuery(); //don't bother saving the number of rows changed anywhere, just exec the query
             }
+            return userAccount;
         }
+    }
 }
