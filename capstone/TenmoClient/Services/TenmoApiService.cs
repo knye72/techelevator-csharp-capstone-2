@@ -23,7 +23,10 @@ namespace TenmoClient.Services
 
             CheckForError(response);
             return response.Data;
-
         }   
+        //public SendTransfer SendMoney()
+        //{
+
+        //}
     }
 }
