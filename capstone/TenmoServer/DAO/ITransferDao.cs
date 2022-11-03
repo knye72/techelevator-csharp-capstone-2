@@ -12,5 +12,9 @@ namespace TenmoServer.DAO
     public interface ITransferDao
     {
         decimal GetBalance(string username);
+        User UpdateAccount(User user);
+        int GetAccountId(string username);
+        Transfer CreateTransfer(Transfer transfer, string fromUsername, string toUsername);
+        List<User> GetUsers();
     }
 }

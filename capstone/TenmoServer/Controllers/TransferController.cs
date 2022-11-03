@@ -10,7 +10,7 @@ using TenmoServer.Security;
 
 namespace TenmoServer.Controllers
 {
-    
+
     [Route("user")]
     [ApiController]
 
@@ -49,45 +49,68 @@ namespace TenmoServer.Controllers
 
             //do what you gotta do to update the thing
 
-            User updatedUser = transferDao.UpdateTransfer(fromUser.UserId, user);
+            User updatedUser = transferDao.UpdateAccount(fromUser);
             //have to somehow update updatedUser's balance by using Math method
             return updatedUser;
         }
-        public Transfer Math(User fromUser, User toUser, decimal amount)
+        [HttpPost("transfer")]
+        public Transfer SendTransfer(string fromUsername, string toUsername, decimal amount)
         {
+            User fromUser = userDao.GetUser(fromUsername);
+            User toUser = userDao.GetUser(toUsername);
             Transfer transfer = new Transfer();
-            
-            int transferStatus = 2;
 
-            //retrieve balance from first user from database, subtract amount from first user, add amount to second user, show balance of first user
-            
-            if (fromUser.Balance >= amount)
+            transfer.TransferStatusId = 2;
+
+            //retrieve balance from first user from database, subtract amount from first user, add amount to second user, show balance of first userdecimel
+
+
+            decimal fromUserInitialBalance = transferDao.GetBalance(fromUser.Username);
+
+            if (fromUserInitialBalance >= amount)
             {
                 decimal fromUserBalance = transferDao.GetBalance(fromUser.Username) - amount;
                 decimal toUserBalance = transferDao.GetBalance(toUser.Username) + amount;
                 UpdateUser(fromUser.Username);
                 UpdateUser(toUser.Username);
+                transfer.FromAccountId = transferDao.GetAccountId(fromUser.Username);
+                transfer.ToAccountId = transferDao.GetAccountId(toUser.Username);
+                transfer.TransferAmount = amount;
+
             }
             else
             {
-                transferStatus = 3;
+                transfer.TransferStatusId = 3;
             }
-            AddTransfer(transfer);
+            AddTransfer(transfer, fromUser.Username, toUser.Username);
             return transfer;
 
         }
         [HttpPost()]
-        public ActionResult<Transfer> AddTransfer(Transfer transfer)
+        public ActionResult<Transfer> AddTransfer(Transfer transfer, string fromUser, string toUser)
         {
-            Transfer added = transferDao.CreateTransfer(transfer);
-            return Created($"/users/{added.Id}", added);
+            Transfer added = transferDao.CreateTransfer(transfer, fromUser, toUser);
+            return Created($"/user/{added.TransferId}", added);
         }
         //STEPS FOR SENDING MONEY
         // 1) call method that gets user balance
         // 2) call method that does the math
         // 3) call method that updates the users' balances
+        [HttpGet()]
+        public ActionResult<List<User>> GetUsers()
+        {
+            List<User> users = transferDao.GetUsers();
 
+            if (users.Count >= 0)
+            {
+                return users;
+            }
+            else
+            {
+                return NotFound();
+            }
 
-    } 
+        }
+    }
 }
 

@@ -90,6 +90,16 @@ namespace TenmoClient
 
             if (menuSelection == 4)
             {
+                List<ApiUser> userList = tenmoApiService.ListUsers();
+                ShowUserList(userList);
+                Console.Write("enter username for user being sent money: ");
+                SendTransfer transfer = new SendTransfer();
+                transfer.ToUsername = Console.ReadLine();
+                Console.Write("enter the amount of TEBucks you want to send to the selected user: ");
+                transfer.TransferAmount = Convert.ToDecimal(Console.ReadLine());
+                transfer.TransferTypeId = 2;
+                transfer.FromUsername = tenmoApiService.Username;
+                TransferFunds(transfer.FromUsername, transfer.ToUsername, transfer.TransferAmount);
                 // Send TE bucks
             }
 
@@ -171,6 +181,54 @@ namespace TenmoClient
                     Console.WriteLine(balance);
                 }
                 
+            }
+            catch(Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+            console.Pause();
+        }
+
+        private void ShowUserList(List<ApiUser> users)
+        {
+            try
+            {
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("Users");
+                Console.WriteLine("--------------------------------------------");
+                foreach (ApiUser user in users)
+                {
+                    Console.WriteLine(user.UserId + ": " + user.Username);
+                }
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+            console.Pause();
+        }
+        //private void ShowUserList()
+        //{
+        //    try
+        //    {
+        //        List<ApiUser> userList = tenmoApiService.ListUsers();
+        //        if (userList != null)
+        //        {
+        //            Console.Write(userList.);
+        //        }
+
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        console.PrintError(ex.Message);
+        //    }
+        //    console.Pause();
+        //}
+        private void TransferFunds(string fromUser, string toUser, decimal amount)
+        {
+            try
+            {
+                SendTransfer transfer = tenmoApiService.Transfer(fromUser, toUser, amount);
             }
             catch(Exception ex)
             {
