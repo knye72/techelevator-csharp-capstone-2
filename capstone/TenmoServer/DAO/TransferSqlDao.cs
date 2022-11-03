@@ -45,6 +45,104 @@ namespace TenmoServer.DAO
 
             return balance;
         }
-    }
+        public int GetAccountId(string username)
+        {
+            int accountId = 0;
 
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT account_id FROM account JOIN tenmo_user ON tenmo_user.user_id = account.user_id WHERE username = @username", conn);
+                    cmd.Parameters.AddWithValue("@username", username);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        accountId = Convert.ToInt32(reader["account_id"]);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return accountId;
         }
+
+            public Transfer CreateTransfer(Transfer transfer, string fromUsername, string toUsername)
+        {
+            int newTransferId;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                //int fromAccountid = GetAccountId();
+
+                SqlCommand cmd = new SqlCommand("INSERT INTO transfer(transfer_id transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                    "OUTPUT INSERTED.transfer_id VALUES(@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);", conn);
+                cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                cmd.Parameters.AddWithValue("@account_from", transfer.FromAccountId);
+                cmd.Parameters.AddWithValue("@account_to", transfer.ToAccountId);
+                cmd.Parameters.AddWithValue("@amount", transfer.TransferAmount);
+
+                //ExecuteScalar() since we expect the id back from the query
+                newTransferId = Convert.ToInt32(cmd.ExecuteScalar()); //need to do the conversion to a data type that C# understands 
+
+
+            }
+
+            Transfer newTransfer = GetTransfer(newTransferId); //we wrote a method for getting a specific transfer from the DB, so let's use it
+            return newTransfer;
+        }
+        public Transfer GetTransfer(int transferId)
+        {
+            Transfer transfer = null;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT * FROM transfer WHERE transfer_id = @transfer_id", conn);
+                cmd.Parameters.AddWithValue("@transfer_id", transferId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read()) //if only one row is expected back, just check to see if it can be read, don't need a whole while loop for one row 
+                {
+                    transfer = CreateTransferFromReader(reader);
+                }
+
+            }
+
+            return transfer;
+        }
+        private Transfer CreateTransferFromReader(SqlDataReader reader) //make a transfer object out of row of SQL data
+        {
+            Transfer transfer = new Transfer();
+            transfer.TransferId = Convert.ToInt32(reader["transfer_id"]);
+            transfer.TransferTypeId = Convert.ToInt32(reader["transfer_type_id"]);
+            transfer.TransferStatusId = Convert.ToInt32(reader["transfer_status_id"]);
+            transfer.TransferAmount = Convert.ToDecimal(reader["amount"]);
+            transfer.FromAccountId = Convert.ToInt32(reader["account_from"]);
+            transfer.ToAccountId = Convert.ToInt32(reader["account_to"]);
+            
+            return transfer;
+        }
+            public void UpdateAccount(Account account)
+        {
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance, WHERE user_id = @user_id", conn);
+                cmd.Parameters.AddWithValue("@balance", account.Balance);
+                cmd.Parameters.AddWithValue("@user_id", account.UserId);
+
+
+                cmd.ExecuteNonQuery(); //don't bother saving the number of rows changed anywhere, just exec the query
+            }
+        }
+}
