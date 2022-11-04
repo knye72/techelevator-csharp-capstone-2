@@ -135,6 +135,21 @@ namespace TenmoServer.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet()]
+        public ActionResult<List<Transfer>> GetTransfers()
+        {
+            List<Transfer> transfers = transferDao.GetTransfersByUser(user);
+
+            if (transfers.Count >= 0)
+            {
+                return transfers;
+            }
+            else
+            {
+                return NotFound();
+            }
 
         }
     }
