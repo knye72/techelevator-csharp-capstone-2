@@ -107,6 +107,18 @@ namespace TenmoClient
 
             if (menuSelection == 5)
             {
+                List<ApiUser> userList = tenmoApiService.ListUsers();
+                ShowUserList(userList);
+                Console.Write("enter username for user who should be sending you money: ");
+                SendTransfer requestTransfer = new SendTransfer();
+                requestTransfer.FromUsername = Console.ReadLine();
+                Console.Write("enter the amount of TEBucks you want to receieve from the selected user: ");
+                requestTransfer.TransferAmount = Convert.ToDecimal(Console.ReadLine());
+                requestTransfer.TransferTypeId = 1;
+                requestTransfer.TransferStatusId = 1;
+                requestTransfer.ToUsername = tenmoApiService.Username;
+                TransferFunds(requestTransfer.FromUsername, requestTransfer.ToUsername, requestTransfer.TransferAmount);
+
                 // Request TE bucks
             }
 
@@ -226,11 +238,11 @@ namespace TenmoClient
         //    }
         //    console.Pause();
         //}
-        private void TransferFunds(string fromUser, string toUser, decimal amount)
+        private void TransferFunds(string fromUser, string toUser, decimal amount, int transferTypeId, int transferStatusId)
         {
             try
             {
-                SendTransfer transfer = tenmoApiService.Transfer(fromUser, toUser, amount);
+                SendTransfer transfer = tenmoApiService.Transfer(fromUser, toUser, amount, transferTypeId, transferStatusId);
             }
             catch(Exception ex)
             {
