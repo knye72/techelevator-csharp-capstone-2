@@ -11,7 +11,7 @@ namespace TenmoClient.Models
 
         public decimal TransferAmount { get; set; }
 
-        public int TransferStatusId { get; set; } = 2; // 1 = pending, 2 = approved, 3 = rejected
+        public int TransferStatusId { get; set; } //= 2; // 1 = pending, 2 = approved, 3 = rejected
 
         public string ToUsername { get; set; }
         public string FromUsername { get; set; } // may need to be username

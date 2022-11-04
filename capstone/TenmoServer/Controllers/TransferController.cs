@@ -137,10 +137,10 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet()]
-        public ActionResult<List<Transfer>> GetTransfers()
+        [HttpGet("transfer/{username}")]
+        public ActionResult<List<Transfer>> GetTransfers(string username)
         {
-            List<Transfer> transfers = transferDao.GetTransfersByUser(user);
+            List<Transfer> transfers = transferDao.GetTransfersByUser(username);
 
             if (transfers.Count >= 0)
             {

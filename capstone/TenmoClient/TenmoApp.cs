@@ -25,7 +25,7 @@ namespace TenmoClient
                 if (tenmoApiService.IsLoggedIn)
                 {
                     keepGoing = RunAuthenticated();
-                }
+                     }
                 else // User is not yet logged in
                 {
                     keepGoing = RunUnauthenticated();
@@ -78,9 +78,10 @@ namespace TenmoClient
                 // View your current balance
             }
 
-            if (menuSelection == 2)
+            
+             if (menuSelection == 2)
             {
-                // View your past transfers
+                ShowTransferList(tenmoApiService.ListTransfer(tenmoApiService.Username));
             }
 
             if (menuSelection == 3)
