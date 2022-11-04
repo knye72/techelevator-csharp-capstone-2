@@ -27,7 +27,8 @@ namespace TenmoClient.Services
 
         public SendTransfer Transfer(string fromUser, string toUser, decimal amount)
         {
-            RestRequest request = new RestRequest($"user");
+            RestRequest request = new RestRequest($"transfer");
+            request.AddJsonBody(Transfer(fromUser, toUser, amount));
             IRestResponse<SendTransfer> response = client.Post<SendTransfer>(request);
 
             CheckForError(response);
