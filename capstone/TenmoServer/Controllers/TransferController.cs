@@ -86,6 +86,21 @@ namespace TenmoServer.Controllers
             return transfer;
 
         }
+        [HttpGet("transfer")]
+        public ActionResult<int> GetAccountIdFromDao(string username)
+        {
+            int accountId = transferDao.GetAccountId(username);
+            if(accountId != 0)
+            {
+                return accountId;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
         [HttpPost()]
         public ActionResult<Transfer> AddTransfer(Transfer transfer, string fromUser, string toUser)
         {
