@@ -117,7 +117,7 @@ namespace TenmoClient
                 requestTransfer.TransferTypeId = 1;
                 requestTransfer.TransferStatusId = 1;
                 requestTransfer.ToUsername = tenmoApiService.Username;
-                TransferFunds(requestTransfer.FromUsername, requestTransfer.ToUsername, requestTransfer.TransferAmount);
+                TransferFunds(requestTransfer.FromAccountId, requestTransfer.ToAccountId, requestTransfer.TransferAmount, requestTransfer.TransferTypeId, requestTransfer.TransferStatusId);
 
                 // Request TE bucks
             }
@@ -238,11 +238,11 @@ namespace TenmoClient
         //    }
         //    console.Pause();
         //}
-        private void TransferFunds(string fromUser, string toUser, decimal amount, int transferTypeId, int transferStatusId)
+        private void TransferFunds(int fromAccountId, int toAccountId, decimal amount, int transferTypeId, int transferStatusId)
         {
             try
             {
-                SendTransfer transfer = tenmoApiService.Transfer(fromUser, toUser, amount, transferTypeId, transferStatusId);
+                SendTransfer transfer = tenmoApiService.Transfer(fromAccountId, toAccountId, amount, transferTypeId, transferStatusId);
             }
             catch(Exception ex)
             {

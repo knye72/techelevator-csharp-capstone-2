@@ -54,10 +54,11 @@ namespace TenmoServer.Controllers
             return updatedUser;
         }
         [HttpPost("transfer")]
-        public Transfer SendTransfer(string fromUsername, string toUsername, decimal amount)
+        public Transfer SendTransfer(Transfer incomingTransfer)
         {
-            User fromUser = userDao.GetUser(fromUsername);
-            User toUser = userDao.GetUser(toUsername);
+            Transfer fromUser = userDao.GetUser(incomingTransfer.FromAccountId);
+            User toUser = userDao.GetUser(incomingTransfer.ToAccountId);
+            Transfer Amount
             Transfer transfer = new Transfer();
 
             transfer.TransferStatusId = 2;
@@ -86,7 +87,7 @@ namespace TenmoServer.Controllers
             return transfer;
 
         }
-        [HttpGet("transfer")]
+        [HttpGet("account/{username}")]
         public ActionResult<int> GetAccountIdFromDao(string username)
         {
             int accountId = transferDao.GetAccountId(username);

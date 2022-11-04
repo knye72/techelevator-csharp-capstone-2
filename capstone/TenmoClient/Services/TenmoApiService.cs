@@ -15,6 +15,15 @@ namespace TenmoClient.Services
 
         // Add methods to call api here...
 
+        public int GetAccountNumber(string username)
+        {
+            RestRequest request = new RestRequest($"user/account/{username}");
+            IRestResponse<int> response = client.Get<int>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
+
         public decimal GetBalance(string username)
         {
             
@@ -25,10 +34,18 @@ namespace TenmoClient.Services
             return response.Data;
         }
 
-        public SendTransfer Transfer(string fromUser, string toUser, decimal amount)
+        public SendTransfer Transfer(int fromAccountId, int toAccountId, decimal amount, int transferTypeId, int transferStatusId)
         {
-            RestRequest request = new RestRequest($"transfer");
-            request.AddJsonBody(Transfer(fromUser, toUser, amount));
+            SendTransfer transfer = new SendTransfer();
+
+            transfer.ToAccountId = toAccountId;
+            transfer.FromAccountId = fromAccountId;
+            transfer.TransferAmount = amount;
+            transfer.TransferTypeId = transferTypeId;
+            transfer.TransferStatusId = transferStatusId;
+
+            RestRequest request = new RestRequest($"user/transfer");
+            request.AddJsonBody(transfer);//change
             IRestResponse<SendTransfer> response = client.Post<SendTransfer>(request);
 
             CheckForError(response);
