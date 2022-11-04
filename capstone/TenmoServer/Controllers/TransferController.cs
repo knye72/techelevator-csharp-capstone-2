@@ -39,26 +39,26 @@ namespace TenmoServer.Controllers
 
         }
         [HttpPut("{id}")] // /users/:id 
-        public ActionResult<User> UpdateUser(string username)
+        public ActionResult<Account> UpdateBalance(int accountId)
         {
-            User fromUser = userDao.GetUser(username);
-            if (fromUser == null) //if the user doesn't exist 
+            Account fromAccount = transferDao.GetAccount(accountId);
+            if (fromAccount == null) //if the user doesn't exist 
             {
                 return NotFound(); //404
             }
 
             //do what you gotta do to update the thing
 
-            User updatedUser = transferDao.UpdateAccount(fromUser);
+            Account updatedAccount = transferDao.UpdateAccount(fromAccount);
             //have to somehow update updatedUser's balance by using Math method
-            return updatedUser;
+            return updatedAccount;
         }
         [HttpPost("transfer")]
         public Transfer SendTransfer(Transfer incomingTransfer)
         {
-            Transfer fromUser = userDao.GetUser(incomingTransfer.FromAccountId);
-            User toUser = userDao.GetUser(incomingTransfer.ToAccountId);
-            Transfer Amount
+            //Transfer fromUser = userDao.GetUser(incomingTransfer.FromAccountId);
+            //User toUser = userDao.GetUser(incomingTransfer.ToAccountId);
+            //Transfer Amount
             Transfer transfer = new Transfer();
 
             transfer.TransferStatusId = 2;
@@ -66,24 +66,25 @@ namespace TenmoServer.Controllers
             //retrieve balance from first user from database, subtract amount from first user, add amount to second user, show balance of first userdecimel
 
 
-            decimal fromUserInitialBalance = transferDao.GetBalance(fromUser.Username);
+            decimal fromUserInitialBalance = transferDao.GetBalanceByAccount(incomingTransfer.FromAccountId);
+            Account fromAccount = transferDao.GetAccount(incomingTransfer.FromAccountId);
+            Account toAccount = transferDao.GetAccount(incomingTransfer.ToAccountId);
 
-            if (fromUserInitialBalance >= amount)
+            if (fromUserInitialBalance >= incomingTransfer.TransferAmount)
             {
-                decimal fromUserBalance = transferDao.GetBalance(fromUser.Username) - amount;
-                decimal toUserBalance = transferDao.GetBalance(toUser.Username) + amount;
-                UpdateUser(fromUser.Username);
-                UpdateUser(toUser.Username);
-                transfer.FromAccountId = transferDao.GetAccountId(fromUser.Username);
-                transfer.ToAccountId = transferDao.GetAccountId(toUser.Username);
-                transfer.TransferAmount = amount;
+                
+                fromAccount.Balance = fromUserInitialBalance - incomingTransfer.TransferAmount;
+                toAccount.Balance = transferDao.GetBalanceByAccount(incomingTransfer.ToAccountId) + incomingTransfer.TransferAmount;
+                transferDao.UpdateAccount(fromAccount);
+                transferDao.UpdateAccount(toAccount);
+                transfer.TransferAmount = incomingTransfer.TransferAmount;
 
             }
             else
             {
                 transfer.TransferStatusId = 3;
             }
-            AddTransfer(transfer, fromUser.Username, toUser.Username);
+            //AddTransfer(transfer, fromUser.Username, toUser.Username);
             return transfer;
 
         }
