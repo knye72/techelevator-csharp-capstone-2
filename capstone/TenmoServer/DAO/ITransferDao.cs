@@ -18,5 +18,6 @@ namespace TenmoServer.DAO
         Account GetAccount(int accountId);
         Transfer CreateTransfer(Transfer transfer);
         List<User> GetUsers();
+        List<Transfer> GetTransfersByUserId(int userId);
     }
 }

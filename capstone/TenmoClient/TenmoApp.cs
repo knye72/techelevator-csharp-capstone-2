@@ -223,23 +223,50 @@ namespace TenmoClient
             }
             console.Pause();
         }
-        //private void ShowUserList()
-        //{
-        //    try
-        //    {
-        //        List<ApiUser> userList = tenmoApiService.ListUsers();
-        //        if (userList != null)
-        //        {
-        //            Console.Write(userList.);
-        //        }
 
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        console.PrintError(ex.Message);
-        //    }
-        //    console.Pause();
-        //}
+        private void ShowTransferList(List<SendTransfer> transfers)
+        {
+            try
+            {
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("Past Transfers");
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("|  From  |   To   | Status |  Type  | Amount |");
+                foreach (SendTransfer transfer in transfers)
+                {
+                    string status = "";
+                    string type = "";
+                    if (transfer.TransferTypeId == 1)
+                    {
+                        type = "request";
+                    }
+                    else 
+                    {
+                        type = "send";
+                    }
+
+                    if (transfer.TransferStatusId == 1)
+                    {
+                        status = "pending";
+                    }
+                    else if (transfer.TransferStatusId == 2)
+                    {
+                        status = "approved";
+                    }
+                    else
+                    {
+                        status = "rejected";
+                    }
+                    Console.WriteLine($"{transfer.FromUsername} : {transfer.ToUsername} : {status} : {type} : {transfer.TransferAmount}");
+                }
+            }
+            catch (Exception ex)
+            {
+                console.PrintError(ex.Message);
+            }
+            console.Pause();
+        }
+
         private void TransferFunds(int fromAccountId, int toAccountId, decimal amount, int transferTypeId, int transferStatusId)
         {
             try
