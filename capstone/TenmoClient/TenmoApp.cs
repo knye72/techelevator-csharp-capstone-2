@@ -99,7 +99,9 @@ namespace TenmoClient
                 transfer.TransferAmount = Convert.ToDecimal(Console.ReadLine());
                 transfer.TransferTypeId = 2;
                 transfer.FromUsername = tenmoApiService.Username;
-                TransferFunds(transfer.FromUsername, transfer.ToUsername, transfer.TransferAmount);
+                transfer.FromAccountId = tenmoApiService.GetAccountNumber(transfer.FromUsername);
+                transfer.ToAccountId = tenmoApiService.GetAccountNumber(transfer.ToUsername);
+                TransferFunds(transfer.FromAccountId, transfer.ToAccountId, transfer.TransferAmount, transfer.TransferTypeId, transfer.TransferStatusId);
                 // Send TE bucks
             }
 
