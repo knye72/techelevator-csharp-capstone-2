@@ -47,8 +47,8 @@ namespace TenmoClient.Services
                 message = "Press any key to continue:";
             }
             Console.Write(message);
-            Console.ReadKey();
-        }
+             Console.ReadKey();
+         }
 
         /// <summary>
         /// Display a prompt and read an integer from the keyboard.

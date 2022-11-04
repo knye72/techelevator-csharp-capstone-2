@@ -231,7 +231,7 @@ namespace TenmoServer.DAO
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance, WHERE user_id = @user_id", conn);
+                SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance WHERE user_id = @user_id", conn);
                 cmd.Parameters.AddWithValue("@balance", account.Balance);
                 cmd.Parameters.AddWithValue("@user_id", account.UserId);
 

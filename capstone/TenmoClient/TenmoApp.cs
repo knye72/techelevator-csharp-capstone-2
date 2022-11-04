@@ -117,6 +117,8 @@ namespace TenmoClient
                 requestTransfer.TransferTypeId = 1;
                 requestTransfer.TransferStatusId = 1;
                 requestTransfer.ToUsername = tenmoApiService.Username;
+                requestTransfer.FromAccountId = tenmoApiService.GetAccountNumber(requestTransfer.FromUsername);
+                requestTransfer.ToAccountId = tenmoApiService.GetAccountNumber(requestTransfer.ToUsername);
                 TransferFunds(requestTransfer.FromAccountId, requestTransfer.ToAccountId, requestTransfer.TransferAmount, requestTransfer.TransferTypeId, requestTransfer.TransferStatusId);
 
                 // Request TE bucks
