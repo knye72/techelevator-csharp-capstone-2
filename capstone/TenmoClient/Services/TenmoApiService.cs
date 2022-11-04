@@ -60,5 +60,15 @@ namespace TenmoClient.Services
             CheckForError(response);
             return response.Data;
         }
+
+        public List<SendTransfer> ListTransfer(string username)
+        {
+            RestRequest request = new RestRequest($"user/transfer/{username}");
+            
+            IRestResponse<List<SendTransfer>> response = client.Get<List<SendTransfer>>(request);
+
+            CheckForError(response);
+            return response.Data;
+        }
     }
 }

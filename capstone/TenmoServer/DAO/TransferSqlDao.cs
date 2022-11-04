@@ -241,7 +241,7 @@ namespace TenmoServer.DAO
             return account;
         }
 
-        public List<Transfer> GetTransfersByUser(User user)
+        public List<Transfer> GetTransfersByUser(string username)
         {
             List<Transfer> transfers = new List<Transfer>();
 
@@ -251,11 +251,8 @@ namespace TenmoServer.DAO
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer" +
-                        "JOIN account ON account_id = account_from OR account_id = account_to" +
-                        "JOIN tenmo_user ON tenmo_user.user_id = account.user_id" +
-                        "WHERE user_id = @user_id", conn);
-                    cmd.Parameters.AddWithValue("@user_id", user.UserId);
+                    SqlCommand cmd = new SqlCommand("SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount  FROM transfer JOIN account ON account_id = account_from OR account_id = account_to JOIN tenmo_user ON tenmo_user.user_id = account.user_id WHERE username = @username", conn);
+                    cmd.Parameters.AddWithValue("@username", username);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
