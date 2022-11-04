@@ -175,7 +175,7 @@ namespace TenmoServer.DAO
                 conn.Open();
                 //int fromAccountid = GetAccountId();
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO transfer(transfer_id transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                SqlCommand cmd = new SqlCommand("INSERT INTO transfer(transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "OUTPUT INSERTED.transfer_id VALUES(@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);", conn);
                 cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
                 cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
