@@ -17,6 +17,10 @@ namespace TenmoClient.Models
         public string FromUsername { get; set; } // may need to be username
 
         public int TransferTypeId { get; set; } // 1 = request, 2 = send
+
+        public int FromAccountId { get; set; }
+
+        public int ToAccountId { get; set; }
         public SendTransfer()
         {
 
