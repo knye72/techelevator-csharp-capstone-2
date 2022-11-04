@@ -75,7 +75,7 @@ namespace TenmoServer.Controllers
             Account fromAccount = transferDao.GetAccount(incomingTransfer.FromAccountId);
             Account toAccount = transferDao.GetAccount(incomingTransfer.ToAccountId);
 
-            if (fromUserInitialBalance >= incomingTransfer.TransferAmount)
+            if (fromUserInitialBalance >= incomingTransfer.TransferAmount && incomingTransfer.TransferStatusId == 2 && incomingTransfer.FromAccountId != incomingTransfer.ToAccountId && incomingTransfer.TransferAmount > 0)
             {
                 
                 fromAccount.Balance = fromUserInitialBalance - incomingTransfer.TransferAmount;
@@ -84,6 +84,11 @@ namespace TenmoServer.Controllers
                 transferDao.UpdateAccount(toAccount);
 
             }
+            //else if (incomingTransfer.TransferStatusId == 1)
+            //{
+
+            //}
+
             else
             {
                 transfer.TransferStatusId = 3;
