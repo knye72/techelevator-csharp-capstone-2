@@ -45,6 +45,33 @@ namespace TenmoServer.DAO
 
             return balance;
         }
+        public decimal GetBalanceByAccount(int accountId)
+        {
+            decimal balance = 0;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT balance FROM account  WHERE account_id = @account_id", conn);
+                    cmd.Parameters.AddWithValue("@account_id", accountId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        balance = Convert.ToDecimal(reader["balance"]);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return balance;
+        }
         public int GetAccountId(string username)
         {
             int accountId = 0;
@@ -71,6 +98,35 @@ namespace TenmoServer.DAO
             }
 
             return accountId;
+        }
+        public Account GetAccount(int accountId)
+        {
+            Account account = new Account();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT account_id, user_id, balance FROM account WHERE account_id = @account_id", conn);
+                    cmd.Parameters.AddWithValue("@account_id", accountId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        account.AccountId = Convert.ToInt32(reader["account_id"]);
+                        account.UserId = Convert.ToInt32(reader["user_id"]);
+                        account.Balance = Convert.ToDecimal(reader["balance"]);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return account;
         }
         public User GetUserFromReader(SqlDataReader reader)
         {
@@ -169,20 +225,20 @@ namespace TenmoServer.DAO
 
             return transfer;
         }
-        public User UpdateAccount(User userAccount)
+        public Account UpdateAccount(Account account)
         {
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand("UPDATE account SET balance = @balance, WHERE user_id = @user_id", conn);
-                cmd.Parameters.AddWithValue("@balance", userAccount.Balance);
-                cmd.Parameters.AddWithValue("@user_id", userAccount.UserId);
+                cmd.Parameters.AddWithValue("@balance", account.Balance);
+                cmd.Parameters.AddWithValue("@user_id", account.UserId);
 
 
                 cmd.ExecuteNonQuery(); //don't bother saving the number of rows changed anywhere, just exec the query
             }
-            return userAccount;
+            return account;
         }
     }
 }
