@@ -167,7 +167,7 @@ namespace TenmoServer.DAO
 
             return returnUsers;
         }
-        public Transfer CreateTransfer(Transfer transfer, string fromUsername, string toUsername)
+        public Transfer CreateTransfer(Transfer transfer)
         {
             int newTransferId;
             using (SqlConnection conn = new SqlConnection(connectionString))
