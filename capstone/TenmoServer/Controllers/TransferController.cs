@@ -61,7 +61,12 @@ namespace TenmoServer.Controllers
             //Transfer Amount
             Transfer transfer = new Transfer();
 
-            transfer.TransferStatusId = 2;
+            transfer.TransferStatusId = incomingTransfer.TransferStatusId;
+            transfer.TransferTypeId = incomingTransfer.TransferTypeId;
+            transfer.TransferAmount = incomingTransfer.TransferAmount;
+            transfer.FromAccountId = incomingTransfer.FromAccountId;
+            transfer.ToAccountId = incomingTransfer.ToAccountId;
+
 
             //retrieve balance from first user from database, subtract amount from first user, add amount to second user, show balance of first userdecimel
 
@@ -77,14 +82,13 @@ namespace TenmoServer.Controllers
                 toAccount.Balance = transferDao.GetBalanceByAccount(incomingTransfer.ToAccountId) + incomingTransfer.TransferAmount;
                 transferDao.UpdateAccount(fromAccount);
                 transferDao.UpdateAccount(toAccount);
-                transfer.TransferAmount = incomingTransfer.TransferAmount;
 
             }
             else
             {
                 transfer.TransferStatusId = 3;
             }
-            //AddTransfer(transfer, fromUser.Username, toUser.Username);
+            AddTransfer(transfer);
             return transfer;
 
         }
@@ -104,9 +108,9 @@ namespace TenmoServer.Controllers
 
 
         [HttpPost()]
-        public ActionResult<Transfer> AddTransfer(Transfer transfer, string fromUser, string toUser)
+        public ActionResult<Transfer> AddTransfer(Transfer transfer)
         {
-            Transfer added = transferDao.CreateTransfer(transfer, fromUser, toUser);
+            Transfer added = transferDao.CreateTransfer(transfer);
             return Created($"/user/{added.TransferId}", added);
         }
         //STEPS FOR SENDING MONEY
